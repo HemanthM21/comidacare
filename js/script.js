@@ -182,7 +182,7 @@ function switchTab(tab) {
     }
 }
 
-// RECIPIENT TAB SWITCHING
+// RECIPIENT TAB SWITCHING - THIS WAS MISSING!
 function switchRecipientTab(tab) {
     document.querySelectorAll('#recipientDashboard .tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('#recipientDashboard .section').forEach(s => s.classList.remove('active'));
@@ -231,7 +231,6 @@ document.getElementById('addFoodForm').addEventListener('submit', function(e) {
     donations.push(donation);
     closeAddFoodModal();
     renderDonorView();
-    renderRecipientView(); // <-- FIX: Update recipient dashboard instantly
     showNotification('Food donation posted successfully!');
 });
 
@@ -255,12 +254,7 @@ function renderCategoryView(category, gridId) {
     const grid = document.getElementById(gridId);
     grid.innerHTML = '';
     
-    let filtered;
-    if (currentUser.role === 'donor') {
-        filtered = donations.filter(d => d.category === category && d.donorEmail === currentUser.email);
-    } else {
-        filtered = donations.filter(d => d.category === category && d.status === 'available');
-    }
+    const filtered = donations.filter(d => d.category === category && d.donorEmail === currentUser.email);
     
     if (filtered.length === 0) {
         grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><p>No donations in this category yet.</p></div>';
@@ -268,7 +262,7 @@ function renderCategoryView(category, gridId) {
     }
     
     filtered.forEach(donation => {
-        grid.innerHTML += createFoodCard(donation, currentUser.role);
+        grid.innerHTML += createFoodCard(donation, 'donor');
     });
 }
 
@@ -336,6 +330,7 @@ function renderRecipientView() {
     });
 }
 
+// THIS FUNCTION WAS MISSING - Recipients can now see their orders!
 function renderRecipientOrders() {
     const grid = document.getElementById('recipientOrdersGrid');
     grid.innerHTML = '';
@@ -417,18 +412,55 @@ function requestFood(donationId) {
         donationHistory.push({...donation});
         
         renderRecipientView();
-        renderOrders();
-        showNotification('Food booked successfully!');
+        showNotification(`Food booked successfully! ${donation.businessName} will contact you soon.`);
     }
 }
 
 function showNotification(message) {
-    const container = document.createElement('div');
-    container.classList.add('notification');
-    container.textContent = message;
-    document.body.appendChild(container);
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.classList.add('show');
     
     setTimeout(() => {
-        container.remove();
-    }, 3000);
+        notification.classList.remove('show');
+    }, 4000);
+}
+
+function logout() {
+    currentUser = null;
+    
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('donorDashboard').style.display = 'none';
+    document.getElementById('recipientDashboard').style.display = 'none';
+    document.getElementById('landing').style.display = 'flex';
+    
+    document.getElementById('authForm').reset();
+    isSignUpMode = true;
+}
+
+function showAbout() {
+    document.getElementById('landing').innerHTML = `
+        <section class="about">
+            <h2>About ComidaCare</h2>
+            <p>
+                ComidaCare is more than just an app — it's a movement to end food waste and hunger.  
+                Every day, countless meals go unused while many go to bed hungry.  
+                Through ComidaCare, restaurants, bakeries, and food outlets can share their surplus food with shelters and NGOs in real time.  
+                Together, we can turn excess into hope, waste into nourishment, and kindness into action.  
+                Join us in making sure that no good food ever goes to waste, and no one sleeps hungry. 🌱
+            </p>
+            <button onclick="location.reload()">Back</button>
+        </section>
+    `;
+}
+
+function showContact() {
+    document.getElementById('landing').innerHTML = `
+        <section class="contact">
+            <h2>Contact Us</h2>
+            <p>Email: support@comidacare.org</p>
+            <p>Phone: +91 98765 43210</p>
+            <button onclick="location.reload()">Back</button>
+        </section>
+    `;
 }
