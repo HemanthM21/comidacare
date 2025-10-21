@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComidaCare - Bridge the Gap Between Surplus and Need</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <section class="landing" id="landing">
+        <div class="nav-links">
+            <a href="#" onclick="showAbout()">About</a>
+            <a href="#" onclick="showContact()">Contact</a>
+        </div>
+        <div class="landing-content">
+            <div class="logo">🍽️</div>
+            <h1 class="brand-name">ComidaCare</h1>
+            <p class="tagline">Bridge the Gap Between Surplus and Need</p>
+            <button class="cta-button" onclick="showRoleSelection()">Let's Start</button>
+        </div>
+    </section>
+
+    <!-- Role Selection -->
+    <section class="role-selection" id="roleSelection">
+        <div class="role-container">
+            <div class="role-card" onclick="selectRole('donor')">
+                <div class="role-icon">🏪</div>
+                <h2 class="role-title">I am a Donor</h2>
+                <p class="role-desc">Restaurant, Bakery, or Food Outlet with surplus food to share</p>
+            </div>
+            <div class="role-card" onclick="selectRole('recipient')">
+                <div class="role-icon">🤝</div>
+                <h2 class="role-title">I am a Recipient</h2>
+                <p class="role-desc">Shelter, NGO, or Community Kitchen helping those in need</p>
+            </div>
+        </div>
+        <div class="auth-footer" style="margin-top: 2rem; color: white;">
+            Already have an account? <a href="#" onclick="showSignIn(); return false;" style="color: white; text-decoration: underline;">Sign In</a>
+        </div>
+    </section>
+
+    <!-- Auth Page -->
+    <section class="auth-page" id="authPage">
+        <div class="auth-container">
+            <h2 class="auth-title" id="authTitle">Create Account</h2>
+            <p class="auth-subtitle" id="authSubtitle">Join ComidaCare and make a difference today</p>
+            <form id="authForm">
+                <div class="form-group" id="nameGroup">
+                    <label for="name"><span class="label-icon">👤</span> Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email"><span class="label-icon">📧</span> Email Address</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password"><span class="label-icon">🔒</span> Password</label>
+                    <input type="password" id="password" placeholder="Create a strong password" required>
+                </div>
+                <div class="form-group" id="categoryGroup" style="display:none;">
+                    <label for="category"><span class="label-icon">🏪</span> Business Type</label>
+                    <select id="category">
+                        <option value="restaurant">Restaurant</option>
+                        <option value="bakery">Bakery</option>
+                        <option value="food-outlet">Food Outlet</option>
+                    </select>
+                </div>
+                <div class="form-group" id="phoneGroup">
+                    <label for="phone"><span class="label-icon">📱</span> Phone Number</label>
+                    <input type="tel" id="phone" placeholder="+91 XXXXX XXXXX" required>
+                </div>
+                <div class="form-group" id="addressGroup">
+                    <label for="address"><span class="label-icon">📍</span> Address</label>
+                    <input type="text" id="address" placeholder="Your complete address" required>
+                </div>
+                <button type="submit" class="submit-btn" id="authSubmitBtn">Create Account</button>
+                <div class="auth-footer">
+                    <span id="authToggleText">Already have an account?</span> <a onclick="toggleAuthMode(); return false;" id="authToggleLink">Sign In</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="dashboard" id="dashboard">
+        <nav class="navbar">
+            <div class="nav-brand">ComidaCare</div>
+            <div class="nav-user">
+                <span id="userName">Welcome!</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <!-- Donor Dashboard -->
+            <div id="donorDashboard" style="display:none;">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('post')">Post Food</div>
+                    <div class="tab" onclick="switchTab('restaurants')">Restaurants</div>
+                    <div class="tab" onclick="switchTab('bakeries')">Bakeries</div>
+                    <div class="tab" onclick="switchTab('outlets')">Food Outlets</div>
+                    <div class="tab" onclick="switchTab('orders')">Orders Received</div>
+                    <div class="tab" onclick="switchTab('history')">Donation History</div>
+                </div>
+                <div class="section active" id="postSection">
+                    <button class="add-food-btn" onclick="openAddFoodModal()">+ Add Food Donation</button>
+                    <div class="food-grid" id="donorFoodGrid"></div>
+                </div>
+                <div class="section" id="restaurantsSection">
+                    <h2 class="section-title">Restaurant Donations</h2>
+                    <div class="food-grid" id="restaurantGrid"></div>
+                </div>
+                <div class="section" id="bakeriesSection">
+                    <h2 class="section-title">Bakery Donations</h2>
+                    <div class="food-grid" id="bakeryGrid"></div>
+                </div>
+                <div class="section" id="outletsSection">
+                    <h2 class="section-title">Food Outlet Donations</h2>
+                    <div class="food-grid" id="outletGrid"></div>
+                </div>
+                <div class="section" id="ordersSection">
+                    <h2 class="section-title">Orders Received</h2>
+                    <div class="food-grid" id="ordersGrid"></div>
+                </div>
+                <div class="section" id="historySection">
+                    <h2 class="section-title">Your Donation History</h2>
+                    <div class="food-grid" id="historyGrid"></div>
+                </div>
+            </div>
+
+            <!-- Recipient Dashboard -->
+            <div id="recipientDashboard" style="display:none;">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchRecipientTab('available')">Available Donations</div>
+                    <div class="tab" onclick="switchRecipientTab('orders')">Your Orders</div>
+                </div>
+                <div class="section active" id="recipientAvailableSection">
+                    <h2 class="section-title">Available Food Donations</h2>
+                    <div class="food-grid" id="recipientFoodGrid"></div>
+                </div>
+                <div class="section" id="recipientOrdersSection">
+                    <h2 class="section-title">Your Booked Orders</h2>
+                    <div class="food-grid" id="recipientOrdersGrid"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Food Modal -->
+    <div class="modal" id="addFoodModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Food Donation</h2>
+                <span class="close-modal" onclick="closeAddFoodModal()">&times;</span>
+            </div>
+            <form id="addFoodForm">
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon">🍽️</span> Food Name</label>
+                    <input type="text" id="foodName" required>
+                </div>
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon">🏪</span> Category</label>
+                    <select id="foodCategory" required>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="bakery">Bakery</option>
+                        <option value="food-outlet">Food Outlet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon">🥗</span> Food Type</label>
+                    <input type="text" id="foodType" placeholder="e.g., Vegetarian, Non-Veg, Vegan" required>
+                </div>
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon">📊</span> Quantity</label>
+                    <input type="text" id="foodQuantity" placeholder="e.g., 50 plates, 20kg" required>
+                </div>
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon">⭐</span> Quality/Condition</label>
+                    <select id="foodQuality" required>
+                        <option value="excellent">Excellent</option>
+                        <option value="good">Good</option>
+                        <option value="fair">Fair</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon">⏰</span> Pickup Time</label>
+                    <input type="time" id="pickupTime" required>
+                </div>
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon">🏢</span> Business Name</label>
+                    <input type="text" id="businessName" required>
+                </div>
+                <div class="form-group">
+                    <label style="color: #ffffff;"><span class="label-icon" >📝</span> Additional Notes</label>
+                    <input type="text" id="notes" placeholder="Any special instructions">
+                </div>
+                <button type="submit" class="submit-btn">Post Donation</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Food Detail Modal -->
+    <div class="modal" id="foodDetailModal">
+        <div class="modal-content detail-modal">
+            <span class="close-modal" onclick="closeFoodDetail()">&times;</span>
+            <div id="foodDetailBody"></div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
